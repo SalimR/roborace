@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<ruleset name="twissandra" xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+	<description>
+		PMD rule set to check code for errors and bad habits
+	</description>
+
+	<!-- THE MEANING OF THE PRIORITIES 
+		1. Change absolutely required. Behavior is critically broken/buggy. 
+		2. Change highly recommended. Behavior is quite likely to be broken/buggy. 
+		3. Change recommended. Behavior is confusing, perhaps buggy, and/or against standards/best practices. 
+		4. Change optional. Behavior is not likely to be buggy, but more just flies in the face of standards/style/good taste. 
+		5. Change highly optional. Nice to have.
+	-->
+
+	<!-- check for unused code -->
+
+	<rule ref="rulesets/unusedcode.xml/UnusedPrivateField">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+		<priority>3</priority>
+	</rule>
+
+	<!-- check basic rules -->
+
+	<rule ref="rulesets/basic.xml/EmptyCatchBlock">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyIfStmt">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyWhileStmt">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyTryBlock">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyFinallyBlock">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptySwitchStatements">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/JumbledIncrementer">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/ForLoopShouldBeWhileLoop">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UnnecessaryConversionTemporary">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/DoubleCheckedLocking">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/ReturnFromFinallyBlock">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptySynchronizedBlock">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UnnecessaryReturn">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyStaticInitializer">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UnconditionalIfStatement">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyStatementNotInLoop">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/BooleanInstantiation">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UnnecessaryFinalModifier">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UselessOverridingMethod">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/ClassCastExceptionWithToArray">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UselessOperationOnImmutable">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/MisplacedNullCheck">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/UnusedNullCheckInEquals">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/BrokenNullCheck">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/BigIntegerInstantiation">
+		<priority>1</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/AvoidUsingOctalValues">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/basic.xml/EmptyInitializer">
+		<priority>2</priority>
+	</rule>
+
+	<!-- check String and StringBuffer handling -->
+
+	<rule ref="rulesets/strings.xml/AvoidDuplicateLiterals">
+		<priority>3</priority>
+		<properties>
+			<property name="skipAnnotations" value="true" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/strings.xml/StringInstantiation">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/StringToString">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/InefficientStringBuffering">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/UnnecessaryCaseChange">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/UseStringBufferLength">
+		<priority>3</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/AppendCharacterWithChar">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/ConsecutiveLiteralAppends">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/UseIndexOfChar">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/UselessStringValueOf">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/StringBufferInstantiationWithChar">
+		<priority>4</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/UseEqualsToCompareStrings">
+		<priority>2</priority>
+	</rule>
+	<rule ref="rulesets/strings.xml/AvoidStringBufferField">
+		<priority>3</priority>
+	</rule>
+
+</ruleset>

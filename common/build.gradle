@@ -1,0 +1,7 @@
+
+apply from: 'https://github.com/breskeby/gradleplugins/raw/master/emmaPlugin/emmaFull.gradle'
+
+dependencies {
+	
+	
+}

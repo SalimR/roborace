@@ -1,0 +1,65 @@
+subprojects {
+
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+
+	group = 'net.skhome'
+	version = '1.0.0-SNAPSHOT'	
+	
+	repositories {
+		mavenRepo urls: 'http://maven.springframework.org/milestone'
+		mavenRepo urls: 'http://maven.springframework.org/release'
+		mavenRepo urls: 'https://github.com/s7/mvnrepo/raw/master'
+		mavenRepo urls: 'http://guice-maven.googlecode.com/svn/trunk'
+		mavenCentral()
+	}
+
+	dependencies {
+
+		// Spring Framework
+		compile group: 'org.springframework', name: 'spring-core', version: '3.1.+'
+		compile group: 'org.springframework', name: 'spring-beans', version: '3.1.+'
+		compile group: 'org.springframework', name: 'spring-context', version: '3.1.+'
+		compile group: 'org.springframework', name: 'spring-web', version: '3.1.+'
+		runtime group: 'org.springframework', name: 'spring-webmvc', version: '3.1.+'
+		runtime group: 'org.springframework.security', name: 'spring-security-acl', version: '3.1.+'
+		runtime (group: 'org.springframework.security', name: 'spring-security-config', version: '3.1.+') {
+			exclude group: 'com.google.code.guice', module: 'guice'
+		}
+		runtime group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.+'
+		runtime group: 'org.springframework.security', name: 'spring-security-taglibs', version: '3.1.+'
+		runtime group: 'org.springframework.security', name: 'spring-security-web', version: '3.1.+'
+		runtime group: 'cglib', name: 'cglib', version: '2.2.2'
+	
+		// Servlet API will be provided by the servlet container
+		// provided group:'javax.servlet', name:'servlet-api', version:'2.5'
+		
+			// JSR 303 annotations (Validation)
+		compile group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
+		runtime group: 'org.hibernate', name: 'hibernate-validator', version: '4.0.2.GA'
+		
+		// JSR 330 (DI) annotations
+		compile group: 'javax.inject', name: 'javax.inject', version: '1'
+		
+		// JSON support
+		compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.6.4'
+
+		// Logging
+		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.5.8'
+		runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.5.8'
+		runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.5.8'
+		runtime group: 'log4j', name: 'log4j', version: '1.2.16'
+
+		// Testing and Mocking
+		testCompile group: 'junit', name: 'junit', version: '4.8.+'
+		testCompile group: 'org.mockito', name: 'mockito-core', version: '1.8.+'
+		testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3.+'
+		
+		
+		
+	}
+	
+	sourceCompatibilty = 1.6
+	targetCompatibilty = 1.6
+	
+}
