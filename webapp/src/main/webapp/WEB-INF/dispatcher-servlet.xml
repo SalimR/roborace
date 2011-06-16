@@ -26,7 +26,7 @@
 	<context:property-placeholder location="classpath:environment.properties" />
 
 	<!-- scans the classpath of this application for @Components to deploy as beans -->
-	<context:component-scan base-package="net.skhome.twissandra" />
+	<context:component-scan base-package="net.skhome" />
 
 	<!-- configures the @Controller programming model -->
 	<mvc:annotation-driven />

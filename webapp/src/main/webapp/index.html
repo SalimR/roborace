@@ -4,37 +4,66 @@
 <!--[if IE 7 ]><html class="no-js ie7" lang="en"><![endif]-->
 <!--[if IE 8 ]><html class="no-js ie8" lang="en"><![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+
 <head>
+
 	<meta charset="utf-8">
-	<title>Twissandra</title>
+	<title>Robo Race</title>
 	<meta name="description" content="Cassandra Showcase">
 	<meta name="author" content="Sascha Krüger">
-
+	
 	<!-- Mobile viewport optimized: j.mp/bplateviewport -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+	
 	<!-- CSS with version information to control caching -->
 	<link rel="stylesheet" media="all" href="resources/style.css?v=1">
-
+	
 	<!-- all JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects -->
 	<script src="scripts/libs/modernizr-1.7.min.js"></script>
-	
+
 </head>
 
 <body>
 
-	<div id="container">
-		<header>
-			<h1>Twissandra</h1>
-		</header>
-		<section id="main">
-			<input id="username" name="username" type="text" />
-			<input id="password" name="password" type="password" />
-			<button type="button" value="register">Register</button>
+	<header>
+		<h1>Robo Race</h1>
+		<section id="welcome">
+			<form id="login" action="login" method="post">
+				<span>Login:</span> <input id="username" name="j_username"
+					type="text" required="required" placeholder="username" /> <input
+					id="password" name="j_password" type="password" required="required"
+					placeholder="password" />
+				<button type="submit">Login</button>
+			</form>
+			<form id="logout" action="logout" method="get" class="hidden">
+				<span>Welcome </span>
+				<button type="submit">Logout</button>
+			</form>
 		</section>
-		<footer>
-		</footer>
-	</div>
+		<nav id="navigation">
+			<ul>
+				<li><a href="#" title="News">News</a></li>
+				<li><a href="#" title="Learning Center">Learning Center</a>
+					<ul>
+						<li><a href="#" title="Robots">Robots</a>
+						</li>
+						<li><a href="#" title="Maps">Maps</a>
+						</li>
+					</ul>
+				</li>
+				<li><a href="#" title="Ranking">Ranking</a></li>
+				<li><a href="#" title="Community">Community</a></li>
+				<li><a href="#" title="Media">Media</a></li>
+			</ul>
+		</nav>
+	</header>
+	
+	<section id="main">
+		<table id="playfield">
+		</table>
+	</section>
+	
+	<footer> </footer>
 
 	<!-- JavaScript at the bottom for fast page loading -->
 

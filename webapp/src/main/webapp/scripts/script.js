@@ -14,24 +14,52 @@
  * limitations under the License.
  */
 
-$.ajaxSetup({
-	accepts : 'application/json',
-	contentType : 'application/json'
-});
+var loggedIn = false;
 
 $(document).ready(function() {
 
-	$('#main button').click(function(event) {
-		
-		var userdata = {
-			username: $('#username').val(),
-			password: $('#password').val()
-		};
-
-		$.post('/twissandra/rest/account', JSON.stringify(userdata), function(result) {
-			alert('new id: ' + result.id);
-		}, "json");
-		
+	// when page loads check if user is logged in and adjust login header
+	$.ajax({
+		url : 'rest/session',
+		dataType : 'json',
+		success : function(result) {
+			loggedIn = result;
+			if (loggedIn) {
+				$('#welcome #login').hide();
+				$('#welcome #logout').show();
+			} else {
+				$('#welcome #logout').hide();
+			}
+		}
 	});
+	
+	// prepare playfield
+	for (i=1; i<=10; i++) {
+		$('#playfield').append('<tr></tr>');
+	}
+	for (i=1; i<=16; i++) {
+		$('#playfield tr').append('<td></td>');
+	}
+
+	//cache nav  
+	var nav = $("#navigation");  
+	
+	// add indicators and hovers to submenu parents  
+	nav.find("li").each(function() {  
+		if ($(this).find("ul").length > 0) {  
+		
+			// show subnav on hover  
+			$(this).mouseenter(function() {  
+				$(this).find("ul").stop(true, true).slideDown();  
+			});  
+		
+			// hide submenus on exit  
+			$(this).mouseleave(function() {  
+				$(this).find("ul").stop(true, true).slideUp();  
+			});  
+		}  
+	});  
+
+
 });
 

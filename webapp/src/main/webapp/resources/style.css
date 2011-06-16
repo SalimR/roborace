@@ -94,15 +94,56 @@ a:hover { color: #036; }
 /**
  * Primary styles
  */
-body { background: transparent url('../images/backgrounds/background_page.gif') repeat left top;}
+body { background: black url('../images/backgrounds/background_page.gif') repeat left top;}
 
-#container { width: 960px; margin: 0 auto; }
-#container header { margin-top: 200px; }
-#container header h1 { margin: 0 auto; width: 600px; height: 82px; background: transparent url('../images/visuals/visual_headline.png') no-repeat top left; text-indent: -9999px; }
+header { width: 960px; height: 160px; margin: 0 auto; position: relative; }
+header h1 { position: absolute; height: 100px; width: 250px; top: 30px; left: 30px; color: #CCCCDD; font-size: 32px; }
 
-#main { margin-top: 50px; text-align: center; }
-#main input { font-size: 20px; height: 32px; width: 200px; padding: 0px 5px; margin: 0px 10px; border: 2px solid #444444; border-radius: 8px; background-clip: padding-box; background-image: -moz-linear-gradient(top, #DEDEDE, #FFFFFF); }
-#main button { font-size: 20px; font-weight: bold; height: 36px; width: 180px; padding: 0px 5px; margin: 0px 10px; border: 2px solid #444444; border-radius: 8px; background-clip: padding-box;  background-image: -moz-linear-gradient(top, #EEEEEE, #CCCCCC); }
+/* top login / welcome menu */
+#welcome { position:absolute; top: 10px; right: 0px; width: 400px; padding: 5px 10px; color: #ccd; border: 1px solid #666677; border-radius: 4px; background-image: -moz-linear-gradient(top, #444455, #333344); background-image: -webkit-linear-gradient(top, #444455, #333344); }
+#welcome span { height: 20px; vertical-align: middle; padding-right: 5px; }
+#welcome input { width: 120px; height: 16px; padding: 2px 4px; border: 1px solid #666; border-radius: 2px; background-clip: padding-box; background-image: -moz-linear-gradient(top, #DEDEDE, #FFFFFF); }
+#welcome input:invalid { background-image: -moz-linear-gradient(top, #FFDEDE, #FFFFFF); background-image: -webkit-linear-gradient(top, #FFDEDE, #FFFFFF); }
+#welcome button { width: 60px; height: 22px; font-size: 12px; padding: 2px 4px; border: 1px solid #666; border-radius: 2px; background-clip: padding-box; background-image: -moz-linear-gradient(top, #FFFFFF, #DEDEDE); }
+
+/* main navigation menu */
+.no-js nav li:hover ul { display:block; } 
+nav { display: block; position:absolute; top: 70px; right: 0px; margin: 0 auto 20px; border:1px solid #666677; background-color: #444455; }
+nav ul { padding: 0px; margin: 0px; }  
+nav ul:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+nav li { position: relative; float: left; list-style-type: none; }
+nav li a { display: block; padding: 10px 20px; border-left: 1px solid #666677; border-right: 1px solid #222233; color: #eee; text-decoration:none; }
+nav li a:hover { color: #ccccdd; background-color: #555566; }
+nav li a:visited { color: #ccccdd; outline: none; text-decoration:none; }
+nav li a:focus { color: #ffffff; outline:none; text-decoration:none;  }  
+nav li:first-child a { border-left:none; }  
+nav li:last-child a { border-right:none; }  
+nav a span { display:block; float:right; margin-left:5px; }  
+nav ul ul { display:none; width:100%; position:absolute; left:0; }
+nav ul ul li { float:none; }  
+nav ul ul a { display: block; padding: 10px 20px; border-left:none; border-right:none; color: #eee; }
+
+.borderradius nav { -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; background-clip: padding-box; } 
+.cssgradients nav { background-image: -moz-linear-gradient(top, #444455, #333344); background-image: -webkit-linear-gradient(top, #444455, #333344); } 
+.boxshadow.rgba nav { -moz-box-shadow: 2px 2px 2px rgba(0,0,0,.75); -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,.75); box-shadow:2px 2px 2px rgba(0,0,0,.75); } 
+.cssgradients nav li a:hover { background-image: -moz-linear-gradient(top, #555566, #444455); background-image: -webkit-linear-gradient(top, #555566, #444455); }
+.borderradius nav ul ul { -moz-border-radius-bottomleft: 4px; -moz-border-radius-bottomright: 4px; -webkit-border-bottom-left-radius: 4px; -webkit-border-bottom-rightright-radius: 4px; border-bottom-left-radius: 4px; border-bottom-rightright-radius: 4px; }  
+.boxshadow.rgba nav ul ul { background-color: rgba(0,0,0,0.5); -moz-box-shadow: 2px 2px 2px rgba(0,0,0,.8); -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,.8); box-shadow: 2px 2px 2px rgba(0,0,0,.8); }  
+.rgba nav ul ul li { border-left: 1px solid rgba(0,0,0,0.1); border-right: 1px solid rgba(0,0,0,0.1); }  
+.rgba nav ul ul a:hover { background-color: rgba(85,85,85,.9); }  
+.borderradius.rgba nav ul ul li.last { border-left:1px solid rgba(0,0,0,0.1); border-bottom:1px solid rgba(0,0,0,0.1); -moz-border-radius-bottomleft:4px; -moz-border-radius-bottomright:4px; -webkit-border-bottom-left-radius:4px; -webkit-border-bottom-rightright-radius:4px; border-bottom-left-radius:4px; border-bottom-rightright-radius:4px; } 
+
+#main { width: 960px; margin: 0 auto; }
+
+/* playfield styles */
+#playfield { background-color: #333344; }
+#playfield td { width: 60px; height: 60px; border-right: 1px solid #666677; border-bottom: 1px solid #666677; text-align: center; vertical-align: middle; }
+#playfield td:last-child { border-right: none; } 
+#playfield tr:last-child td { border-bottom: none; }
+
+/* card slots */
+
+
 
 
 

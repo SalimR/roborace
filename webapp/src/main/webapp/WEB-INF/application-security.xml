@@ -23,8 +23,8 @@
 
 	<sec:http use-expressions="true">
 		<sec:http-basic />
-		<sec:logout logout-url="/logout" logout-success-url="/index.jsp" delete-cookies="JSESSIONID" />
-		<sec:form-login login-page="/login.html" login-processing-url="/login" />
+		<sec:logout logout-url="/logout" logout-success-url="/index.html" delete-cookies="JSESSIONID" />
+		<sec:form-login login-page="/index.html" login-processing-url="/login" />
 		<sec:intercept-url pattern="/rest/*" access="permitAll" />
 	</sec:http>
 
