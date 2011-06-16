@@ -1,0 +1,11 @@
+
+apply plugin: 'war'
+
+dependencies {
+	
+	compile project(':roborace-core')
+	compile project(':roborace-roborace')
+	
+}
+
+

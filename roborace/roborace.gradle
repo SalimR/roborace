@@ -1,0 +1,7 @@
+
+dependencies {
+	
+	// project dependencies
+	compile project(':roborace-core')
+
+}
