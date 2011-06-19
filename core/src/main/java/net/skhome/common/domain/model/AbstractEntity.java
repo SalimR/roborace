@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.skhome.common.domain.entity;
+package net.skhome.common.domain.model;
 
 import net.skhome.common.transfer.TransferObject;
 
