@@ -1,1 +1,24 @@
-include "common", "roborace", "webapp"
+
+def String[] modules = [
+    'core',
+    'roborace'
+]
+
+include modules
+
+modules.each {name ->
+    p = findProject(":${name}")
+    p.name = "roborace-${name}"
+    p.buildFileName = "${name}.gradle"
+}
+
+include 'webapp'
+
+webapp = findProject(':webapp')
+webapp.name = "roborace"
+webapp.buildFileName = "webapp.gradle"
+
+rootProject.children.each {project ->
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}

@@ -14,52 +14,145 @@
  * limitations under the License.
  */
 
-var loggedIn = false;
-
-$(document).ready(function() {
-
-	// when page loads check if user is logged in and adjust login header
-	$.ajax({
-		url : 'rest/session',
-		dataType : 'json',
-		success : function(result) {
-			loggedIn = result;
-			if (loggedIn) {
-				$('#welcome #login').hide();
-				$('#welcome #logout').show();
-			} else {
-				$('#welcome #logout').hide();
+var roborace = {
+	
+	jQuery : $,
+	
+	settings : {
+		numberColumns : 24,
+		numberRows : 16
+	},
+	
+	state : {
+		loggedIn : false
+	},
+	
+	init : function() {
+		
+		this.checkLoginState();
+		this.createBattlefield();
+		this.createNavigation();
+		
+	},
+	
+	checkLoginState : function() {
+		
+		this.jQuery.ajax({
+			url : 'rest/session',
+			dataType : 'json',
+			success : function(result) {
+				
+				this.state.loggedIn = result;
+				log('result from login check', this, result);
+				
+				if (loggedIn) {
+					$('#welcome #login').hide();
+					$('#welcome #logout').show();
+				} else {
+					$('#welcome #logout').hide();
+				}
 			}
+		});
+		
+	},
+	
+	createBattlefield : function() {
+		
+		var $ = this.jQuery;
+		var columnString = '';
+		var rowString = '';
+		
+		for (var i = 1;  i <= this.settings.numberColumns; i++) {
+			columnString += '<td></td>';
 		}
-	});
-	
-	// prepare playfield
-	for (i=1; i<=10; i++) {
-		$('#playfield').append('<tr></tr>');
-	}
-	for (i=1; i<=16; i++) {
-		$('#playfield tr').append('<td></td>');
-	}
-
-	//cache nav  
-	var nav = $("#navigation");  
-	
-	// add indicators and hovers to submenu parents  
-	nav.find("li").each(function() {  
-		if ($(this).find("ul").length > 0) {  
+		for (var i = 1; i <= this.settings.numberRows; i++) {
+			rowString += '<tr>' + columnString + '</tr>';
+		}
+		$('#battlefield').append(rowString);
 		
-			// show subnav on hover  
-			$(this).mouseenter(function() {  
-				$(this).find("ul").stop(true, true).slideDown();  
-			});  
+	},
+	
+	createNavigation : function() {
+
+		$("#navigation").find('li').each(function() {
+			
+			if ($(this).find('ul').length > 0) {
+			
+				$(this).mouseenter(function() {
+					$(this).find('ul').stop(true, true).slideDown();
+				});
+			
+				$(this).mouseleave(function() {
+					$(this).find('ul').stop(true, true).slideUp();
+				});
+			}
+			
+		});
 		
-			// hide submenus on exit  
-			$(this).mouseleave(function() {  
-				$(this).find("ul").stop(true, true).slideUp();  
-			});  
-		}  
-	});  
+		$('#startGame').click(function() {
+			roborace.createMap();
+		});
+		
+	},
+	
+	createMap : function() {
+		
+		// here we would load the map data from the server
+		var mapData = {
+			rows : [
+						{ columns : [ 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'CONVEYOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'CONVEYOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'CONVEYOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'CONVEYOR', 'CONVEYOR', 'CONVEYOR', 'CONVEYOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'FLOOR', 'WALL' ] },
+						{ columns : [ 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL', 'WALL' ] }
+					   ]
+		};
+		
+		var rowString = '';
+		for (var r = 0; r < mapData.rows.length; r++) {
+			var eachRow = mapData.rows[r];
+			var columnString = '';
+			for (var c = 0; c < eachRow.columns.length; c++) {
+				var eachColumn = eachRow.columns[c];
+				columnString += '<td class="' + eachColumn + '"></td>';
+			}
+			rowString += '<tr>' + columnString + '</tr>';
+		}		
+		
+		$('#battlefield tbody').replaceWith(rowString);
+		
+	}
+	
+};
+
+roborace.init();
 
 
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

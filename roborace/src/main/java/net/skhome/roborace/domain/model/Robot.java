@@ -5,7 +5,7 @@ package net.skhome.roborace.domain.model;
  * 
  * @author Sascha Krueger (sascha@skhome.net)
  */
-public class Piece {
+public class Robot {
 
 	
 }
