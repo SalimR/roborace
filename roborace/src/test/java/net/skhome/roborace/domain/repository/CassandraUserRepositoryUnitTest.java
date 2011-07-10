@@ -15,29 +15,12 @@
  */
 package net.skhome.roborace.domain.repository;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
-import static org.junit.Assume.assumeThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.verify;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.skhome.roborace.MockitoTestCase;
 import net.skhome.roborace.domain.model.UserAccount;
-import net.skhome.roborace.domain.repository.CassandraUserRepository;
-
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.junit.Before;
@@ -47,14 +30,23 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.scale7.cassandra.pelops.Mutator;
 import org.scale7.cassandra.pelops.RowDeletor;
 import org.scale7.cassandra.pelops.Selector;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.verify;
+
 @RunWith(Theories.class)
-public class CassandraUserRepositoryUnitTest {
+public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 
 	private static final String COLUMN_FAMILY_USER = "user";
 
@@ -103,7 +95,6 @@ public class CassandraUserRepositoryUnitTest {
 
 	@Before
 	public void prepare() {
-		MockitoAnnotations.initMocks(this);
 		repository = new CassandraUserRepository(pool);
 	}
 
@@ -278,8 +269,8 @@ public class CassandraUserRepositoryUnitTest {
 		final boolean result = repository.createOrUpdateUserAccount(userAccount);
 
 		// then
-		assertThat("return value", result, is(true));
-		assertThat("userid updated", userAccount.getId(), is(not(nullValue())));
+		assertThat(result, is(true));
+		assertThat(userAccount.getId(), is(notNullValue()));
 		verify(mutator).writeColumns(eq(COLUMN_FAMILY_USER), anyString(), anyListOf(Column.class));
 		verify(mutator).writeColumns(eq(COLUMN_FAMILY_USERNAME), eq(userAccount.getUsername()), anyListOf(Column.class));
 

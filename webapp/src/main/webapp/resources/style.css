@@ -1,12 +1,28 @@
+/*
+ * Copyright 2011 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
  * v1.6.1 2010-09-17 | Authors: Eric Meyer & Richard Clark
  * html5doctor.com/html-5-reset-stylesheet/
  */
-html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font: inherit; vertical-align: baseline; }
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
 blockquote, q { quotes: none; }
-blockquote:before, blockquote:after, q:before, q:after { content: ""; content: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: none; }
 ins { background-color: #ff9; color: #000; text-decoration: none; }
 mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
 del { text-decoration: line-through; }
@@ -109,16 +125,14 @@ nav ul ul a { display: block; padding: 10px 20px; border-left: none; border-righ
 #main { }
 
 /* battlefield styles */
-#battlefield { margin: 0px 0px 20px 0px; border: 1px solid #151515; background: #222222; }
-#battlefield td { width: 39px; height: 39px; border-right: 1px solid #151515; border-bottom: 1px solid #151515; text-align: center; vertical-align: middle; }
-#battlefield td:last-child { border-right: none; } 
-#battlefield tr:last-child td { border-bottom: none; }
+#battlefield { margin: 0px 0px 20px 0px; border: 1px solid #151515; background: transparent url('../images/backgrounds/background_floor.gif') repeat left top; }
+#battlefield td { width: 40px; height: 40px; text-align: center; vertical-align: middle; }
 #battlefield .WALL { background: #666666; }
-#battlefield .FLOOR { background: #333333; }
-#battlefield .CONVEYOR { background: #666633; }
+#battlefield .FLOOR { background: transparent; }
+#battlefield .CONVEYOR { background: transparent url('../images/backgrounds/background_tile_conveyor_up.png') no-repeat left top; }
+#battlefield .START { background: #6666FF; }
+#battlefield .SAVE { background: #66FF66; }
 
-.rgba #battlefield { border: 1px solid rgba(0, 0, 0, 0.5); }
-.rgba #battlefield td { border-right: 1px solid rgba(0, 0, 0, 0.5); border-bottom: 1px solid rgba(0, 0, 0, 0.5); }
 .boxshadow #battlefield { -moz-box-shadow: 2px 2px 2px #151515; -webkit-box-shadow: 2px 2px 2px #151515; box-shadow: 2px 2px 2px #151515; }
 .boxshadow.rgba #battlefield { -moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); }
 
@@ -139,11 +153,6 @@ nav ul ul a { display: block; padding: 10px 20px; border-left: none; border-righ
 .boxshadow #main ol li .slot { -moz-box-shadow: 2px 2px 2px #151515; -webkit-box-shadow: 2px 2px 2px #151515; box-shadow: 2px 2px 2px #151515; }
 .boxshadow.rgba #main ol li .indicator { -moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); }
 .boxshadow.rgba #main ol li .slot { -moz-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); }
-
-
-
-
-
 
 
 
