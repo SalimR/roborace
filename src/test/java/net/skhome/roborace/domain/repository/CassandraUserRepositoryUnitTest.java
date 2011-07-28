@@ -15,12 +15,9 @@
  */
 package net.skhome.roborace.domain.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import net.skhome.roborace.MockitoTestCase;
 import net.skhome.roborace.domain.model.UserAccount;
+import net.skhome.roborace.domain.repository.cassandra.CassandraUserRepository;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.junit.Before;
@@ -35,6 +32,10 @@ import org.scale7.cassandra.pelops.RowDeletor;
 import org.scale7.cassandra.pelops.Selector;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -42,7 +43,6 @@ import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 
 @RunWith(Theories.class)
@@ -111,8 +111,10 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 		final List<Column> userColumn = buildUserColumn(username, password);
 
 		given(pool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USERNAME), eq(username), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(usernameColumn);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(userColumn);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USERNAME), eq(username), anyBoolean(),
+		isA(ConsistencyLevel.class))).willReturn(usernameColumn);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(),
+		isA(ConsistencyLevel.class))).willReturn(userColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByUsername(username);
@@ -136,7 +138,8 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 		final List<Column> usernameColumn = buildUsernameColumn(uuid);
 
 		given(pool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_USERNAME), eq(username), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(usernameColumn);
+		given(selector.getColumnsFromRow(eq(COLUMN_USERNAME), eq(username), anyBoolean(),
+		isA(ConsistencyLevel.class))).willReturn(usernameColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByUsername(username);
@@ -191,7 +194,8 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 		final List<Column> userColumn = buildUserColumn(username, password);
 
 		given(pool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(userColumn);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(),
+		isA(ConsistencyLevel.class))).willReturn(userColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByPrimaryKey(uuid.toString());

@@ -16,12 +16,11 @@
 
 package net.skhome.roborace.domain.service;
 
-import javax.inject.Inject;
-
 import net.skhome.roborace.domain.model.UserAccount;
 import net.skhome.roborace.domain.repository.UserRepository;
-
 import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 /**
  * Default implementation of the user service.
@@ -54,21 +53,15 @@ public class DefaultUserService implements UserService {
 	}
 
 	@Override
-	public boolean createUserAccount(final UserAccount userAccount) {
-		if (isUsernameAvailable(userAccount.getUsername())) {
-			return repository.createOrUpdateUserAccount(userAccount);
-		} else {
-			return false;
+	public void createUserAccount(final UserAccount account) {
+		if (isUsernameAvailable(account.getUsername())) {
+			repository.createOrUpdateUserAccount(account);
 		}
 	}
 
 	@Override
-	public boolean updateUserAccount(final UserAccount account) {
-		if (isUsernameAvailable(account.getUsername())) {
-			return false;
-		} else {
-			return repository.createOrUpdateUserAccount(account);
-		}
+	public void updateUserAccount(final UserAccount account) {
+		repository.createOrUpdateUserAccount(account);
 	}
-	
+
 }

@@ -35,3 +35,5 @@ use robo;
 
 create column family user with comparator = UTF8Type;
 create column family username with comparator = UTF8Type;
+create column family mapname with comparator = UTF8Type;
+create column family map with comparator = UTF8Type;

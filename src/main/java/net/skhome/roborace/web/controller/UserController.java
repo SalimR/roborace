@@ -15,29 +15,24 @@
  */
 package net.skhome.roborace.web.controller;
 
-import java.util.Collections;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
 import net.skhome.common.domain.ResourceAlreadyExistsException;
 import net.skhome.common.domain.ResourceNotFoundException;
 import net.skhome.roborace.domain.model.UserAccount;
 import net.skhome.roborace.domain.service.UserService;
-
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Map;
 
 /**
- * Controller for REST support to manage user accounts. This controller provides different options to search for user
- * accounts as well as to create, update and delete them.
- * 
+ * Controller for REST support to manage user accounts. This controller provides different options to search for user accounts
+ * as well as to create, update and delete them.
+ *
  * @author Sascha Krueger (sascha@skhome.net)
  */
 @Controller
@@ -51,7 +46,7 @@ public class UserController {
 		super();
 		this.service = service;
 	}
-	
+
 	@RequestMapping(value = "/username/{username}", method = RequestMethod.GET)
 	@ResponseBody
 	public UserAccount findByUsername(@PathVariable("username") final String username) {
@@ -80,12 +75,14 @@ public class UserController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, String> createUserAccount(@RequestBody @Valid final UserAccount account, final HttpServletResponse response) {
+	public Map<String, String> createUserAccount(@RequestBody @Valid final UserAccount account,
+	                                             final HttpServletResponse response) {
 
-		if (service.createUserAccount(account)) {
+		try {
+			service.createUserAccount(account);
 			response.setStatus(HttpServletResponse.SC_CREATED);
 			return Collections.singletonMap("id", account.getId());
-		} else {
+		} catch (DataAccessException ex) {
 			throw new ResourceAlreadyExistsException(account.getUsername());
 		}
 
@@ -94,9 +91,10 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.PUT)
 	public void updateUserAccount(@RequestBody @Valid final UserAccount account, final HttpServletResponse response) {
 
-		if (service.updateUserAccount(account)) {
+		try {
+			service.updateUserAccount(account);
 			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
+		} catch (DataAccessException ex) {
 			throw new ResourceNotFoundException(account.getId());
 		}
 

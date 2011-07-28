@@ -54,7 +54,7 @@ public interface UserRepository {
 	 *
 	 * @return user account with updated id
 	 */
-	public boolean createOrUpdateUserAccount(UserAccount userAccount);
+	public void createOrUpdateUserAccount(UserAccount userAccount);
 
 	/**
 	 * Removes the given user account from the repository.

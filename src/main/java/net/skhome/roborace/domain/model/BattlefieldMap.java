@@ -15,39 +15,145 @@
  */
 package net.skhome.roborace.domain.model;
 
+import net.skhome.common.domain.model.CassandraEntity;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A map that defines the tiles, name and size of a battlefield.
- * 
+ *
  * @author Sascha Krueger (sascha@skhome.net)
  */
-public interface BattlefieldMap {
+public class BattlefieldMap extends CassandraEntity {
 
 	/**
-	 * Returns the name of this map.
-	 * 
-	 * @return name of the map
+	 * name of this map to help humans distinguish them
 	 */
-	public String getName();
+	@NotNull
+	private String name;
 
 	/**
-	 * Returns the width of this map as number of tiles.
-	 * 
-	 * @return width of this map
+	 * width of this map as number of tiles
 	 */
-	public int getWidth();
-	
-	/**
-	 * Returns the height of this map as number of tiles.
-	 * 
-	 * @return height of this map
-	 */
-	public int getHeight();
+	@NotNull
+	@Min(value = 10)
+	private int width;
 
 	/**
-	 * Returns the tiles of this map.
-	 * 
-	 * @return tiles of this map
+	 * height of this map as number of tiles
 	 */
-	public GameAreaTile[][] getTiles();
+	@NotNull
+	@Min(value = 10)
+	private int height;
 
+	/**
+	 * tiles of this map
+	 */
+	@NotNull
+	private List<BattlefieldTile> tiles;
+
+	/**
+	 * Create a new battlefield map with the given information.
+	 *
+	 * @param name
+	 * 		name of the map (must be unique within the repository)
+	 * @param width
+	 * 		width of the map
+	 * @param height
+	 * 		height of the map
+	 * @param tiles
+	 * 		tiles that define the squares
+	 */
+	public BattlefieldMap(final String name, final int width, final int height, final List<BattlefieldTile> tiles) {
+		this.name = name;
+		this.width = width;
+		this.height = height;
+		this.tiles = Collections.unmodifiableList(tiles);
+	}
+
+	/**
+	 * Create a new battlefield map with the given information.
+	 *
+	 * @param uuid
+	 * 		primary key of this map
+	 * @param name
+	 * 		name of the map (must be unique within the repository)
+	 * @param width
+	 * 		width of the map
+	 * @param height
+	 * 		height of the map
+	 * @param tiles
+	 * 		tiles that define the squares
+	 */
+	public BattlefieldMap(final String uuid, final String name, final int width, final int height,
+	                      final List<BattlefieldTile> tiles) {
+		super(uuid);
+		this.name = name;
+		this.width = width;
+		this.height = height;
+		this.tiles = tiles;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public List<BattlefieldTile> getTiles() {
+		return tiles;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("BattlefieldMap");
+		sb.append("{name='").append(name).append('\'');
+		sb.append(", width=").append(width);
+		sb.append(", height=").append(height);
+		sb.append(", tiles=").append(tiles == null ? "null" : tiles.toString());
+		sb.append('}');
+		return sb.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BattlefieldMap)) {
+			return false;
+		}
+
+		BattlefieldMap that = (BattlefieldMap) o;
+
+		if (height != that.height) {
+			return false;
+		}
+		if (width != that.width) {
+			return false;
+		}
+		if (name != null ? !name.equals(that.name) : that.name != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = name != null ? name.hashCode() : 0;
+		result = 31 * result + width;
+		result = 31 * result + height;
+		return result;
+	}
 }
