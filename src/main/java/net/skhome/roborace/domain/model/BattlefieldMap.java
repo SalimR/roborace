@@ -67,7 +67,7 @@ public class BattlefieldMap extends CassandraEntity {
 	 * @param tiles
 	 * 		tiles that define the squares
 	 */
-	public BattlefieldMap(final String name, final int width, final int height, final List<BattlefieldTile> tiles) {
+	public BattlefieldMap(final String name, final int width, final int height, final List<? extends BattlefieldTile> tiles) {
 		this.name = name;
 		this.width = width;
 		this.height = height;
@@ -89,12 +89,12 @@ public class BattlefieldMap extends CassandraEntity {
 	 * 		tiles that define the squares
 	 */
 	public BattlefieldMap(final String uuid, final String name, final int width, final int height,
-	                      final List<BattlefieldTile> tiles) {
+	final List<? extends BattlefieldTile> tiles) {
 		super(uuid);
 		this.name = name;
 		this.width = width;
 		this.height = height;
-		this.tiles = tiles;
+		this.tiles = Collections.unmodifiableList(tiles);
 	}
 
 	public String getName() {

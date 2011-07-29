@@ -1,5 +1,6 @@
 .gradle
 build
+out
 roborace.iml
 roborace.ipr
 roborace.iws

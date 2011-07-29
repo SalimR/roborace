@@ -64,7 +64,7 @@ public class CassandraBattlefieldMapRepository implements BattlefieldMapReposito
 		final List<Column> columns = selector.getColumnsFromRow(COLUMN_FAMILY_MAPNAME, name, false, CONSISTENCY_LEVEL_READ);
 
 		if (!columns.isEmpty()) {
-			final String uuid = Selector.getColumnStringValue(columns, "mapid");
+			final String uuid = Selector.getColumnStringValue(columns, COLUMN_NAME_UUID);
 			return findBattlefieldMapById(uuid);
 		}
 

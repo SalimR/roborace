@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.skhome.roborace.domain.repository;
+package net.skhome.roborace.domain.repository.cassandra;
 
 import net.skhome.roborace.MockitoTestCase;
 import net.skhome.roborace.domain.model.UserAccount;
-import net.skhome.roborace.domain.repository.cassandra.CassandraUserRepository;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.junit.Before;
@@ -112,18 +111,18 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 
 		given(pool.createSelector()).willReturn(selector);
 		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USERNAME), eq(username), anyBoolean(),
-		isA(ConsistencyLevel.class))).willReturn(usernameColumn);
+				isA(ConsistencyLevel.class))).willReturn(usernameColumn);
 		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(),
-		isA(ConsistencyLevel.class))).willReturn(userColumn);
+				isA(ConsistencyLevel.class))).willReturn(userColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByUsername(username);
 
 		// then
-		assertThat("user account was expected", userAccount, is(notNullValue()));
-		assertThat("userid was wrong", userAccount.getId(), is(uuid.toString()));
-		assertThat("username was wrong", userAccount.getUsername(), is(username));
-		assertThat("password was wrong", userAccount.getPassword(), is(password));
+		assertThat("user account", userAccount, is(notNullValue()));
+		assertThat("userid", userAccount.getId(), is(uuid.toString()));
+		assertThat("username", userAccount.getUsername(), is(username));
+		assertThat("password", userAccount.getPassword(), is(password));
 
 	}
 
@@ -139,13 +138,13 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 
 		given(pool.createSelector()).willReturn(selector);
 		given(selector.getColumnsFromRow(eq(COLUMN_USERNAME), eq(username), anyBoolean(),
-		isA(ConsistencyLevel.class))).willReturn(usernameColumn);
+				isA(ConsistencyLevel.class))).willReturn(usernameColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByUsername(username);
 
 		// then
-		assertThat("user account was not expected", userAccount, is(nullValue()));
+		assertThat("user account", userAccount, is(nullValue()));
 
 	}
 
@@ -195,7 +194,7 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 
 		given(pool.createSelector()).willReturn(selector);
 		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_USER), eq(uuid.toString()), anyBoolean(),
-		isA(ConsistencyLevel.class))).willReturn(userColumn);
+				isA(ConsistencyLevel.class))).willReturn(userColumn);
 
 		// when
 		final UserAccount userAccount = repository.findUserAccountByPrimaryKey(uuid.toString());
@@ -270,10 +269,9 @@ public class CassandraUserRepositoryUnitTest extends MockitoTestCase {
 		given(pool.createMutator()).willReturn(mutator);
 
 		// when
-		final boolean result = repository.createOrUpdateUserAccount(userAccount);
+		repository.createOrUpdateUserAccount(userAccount);
 
 		// then
-		assertThat(result, is(true));
 		assertThat(userAccount.getId(), is(notNullValue()));
 		verify(mutator).writeColumns(eq(COLUMN_FAMILY_USER), anyString(), anyListOf(Column.class));
 		verify(mutator).writeColumns(eq(COLUMN_FAMILY_USERNAME), eq(userAccount.getUsername()), anyListOf(Column.class));
