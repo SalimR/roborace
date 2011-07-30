@@ -1,13 +1,10 @@
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'war'
 apply plugin: 'announce'
 
-springVersion = '3.1.+'
+springVersion = '3.1.0.M2'
 
 repositories {
 
@@ -46,12 +43,12 @@ dependencies {
 	runtime group: 'org.springframework', name: 'spring-webmvc', version: "$springVersion"
 
 	// Spring Security
-	compile group: 'org.springframework.security', name: 'spring-security-core', version: "$springVersion"
-	runtime group: 'org.springframework.security', name: 'spring-security-web', version: "$springVersion"
-	runtime group: 'org.springframework.security', name: 'spring-security-config', version: "$springVersion"
+	compile group: 'org.springframework.security', name: 'spring-security-core', version: "3.1.0.RC2"
+	runtime group: 'org.springframework.security', name: 'spring-security-web', version: "3.1.0.RC2"
+	runtime group: 'org.springframework.security', name: 'spring-security-config', version: "3.1.0.RC2"
 
 	// JSON support
-	runtime group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.6.+'
+	runtime group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.6.7'
 
 	// JSR 303 (validation) annotations and implementation
 	compile group: 'javax.validation', name: 'validation-api', version: '1.0.0.GA'
@@ -63,21 +60,21 @@ dependencies {
 	// persistence layer
 	compile group: 'org.springframework', name: 'spring-tx', version: "$springVersion"
 	compile group: 'org.scale7', name: 'scale7-pelops', version: '1.1-0.7.x'
-	compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '0.7.+'
+	compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '0.7.8'
 
 	// utilities
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 
 	// logging via SLF4J -> LOG4J
-	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.6.+'
-	runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.6.+'
-	runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.6.+'
-	runtime group: 'log4j', name: 'log4j', version: '1.2.+'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1'
+	runtime group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.6.1'
+	runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.6.1'
+	runtime group: 'log4j', name: 'log4j', version: '1.2.16'
 
 	// testing and mocking
-	testCompile group: 'junit', name: 'junit', version: '4.8.+'
+	testCompile group: 'junit', name: 'junit', version: '4.8.2'
 	testCompile group: 'org.mockito', name: 'mockito-core', version: '1.8.5'
-	testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3.+'
+	testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3.RC2'
 
 }
 
@@ -95,6 +92,3 @@ sourceSets.test.compileClasspath += configurations.provided
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-build.doLast {
-	announce('Build finished', 'snarl')
-}
