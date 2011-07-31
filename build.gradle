@@ -33,7 +33,7 @@ configurations {
 dependencies {
 
 	// Servlet API will be provided by the servlet container
-	compileOnly "javax.servlet:servlet-api:2.5"
+	provided "javax.servlet:servlet-api:2.5"
 
 	// Spring Framework
 	compile group: 'org.springframework', name: 'spring-core', version: "$springVersion"
@@ -59,8 +59,8 @@ dependencies {
 
 	// persistence layer
 	compile group: 'org.springframework', name: 'spring-tx', version: "$springVersion"
-	compile group: 'org.scale7', name: 'scale7-pelops', version: '1.1-0.7.x'
-	compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '0.7.8'
+	compile group: 'org.scale7', name: 'scale7-pelops', version: '1.2-0.8.x-SNAPSHOT'
+	compile group: 'org.apache.cassandra', name: 'cassandra-thrift', version: '0.8.1'
 
 	// utilities
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
@@ -81,6 +81,9 @@ dependencies {
 description = 'Robo Race'
 group = 'net.skhome'
 version = '1.0.0.SNAPSHOT'
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 [configurations.runtime, configurations.default]*.exclude(module: "commons-logging")
 [configurations.runtime, configurations.default]*.exclude(module: "guice")

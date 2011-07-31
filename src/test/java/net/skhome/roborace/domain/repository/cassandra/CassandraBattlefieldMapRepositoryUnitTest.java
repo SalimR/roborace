@@ -9,15 +9,15 @@ import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.scale7.cassandra.pelops.Mutator;
 import org.scale7.cassandra.pelops.RowDeletor;
 import org.scale7.cassandra.pelops.Selector;
 import org.scale7.cassandra.pelops.pool.IThriftPool;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,9 +27,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeNotNull;
-import static org.junit.Assume.assumeThat;
 import static org.mockito.BDDMockito.*;
+import static org.mockito.Matchers.eq;
 
 @RunWith(Theories.class)
 public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
@@ -48,25 +47,21 @@ public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
 
 	private static final String COLUMN_NAME_UUID = "uuid";
 
-	@DataPoint
-	public static String MAP_NAME_SAVED = "saved";
+	private static final String MAP_NAME_SAVED = "saved";
 
-	@DataPoint
-	public static String MAP_NAME_UNKNOWN = "unsaved";
+	private static final String MAP_NAME_UNKNOWN = "unsaved";
 
-	@DataPoint
-	public static String MAP_ID_SAVED = "2222-2222-2222-2222";
+	private static final String MAP_NAME_OTHER = "other";
 
-	@DataPoint
-	public static String MAP_ID_UNKNOWN = "1111-1111-1111-1111";
+	private static final String MAP_ID_SAVED = "2222-2222-2222-2222";
 
-	@DataPoint
-	public static BattlefieldMap BATTLEFIELD_MAP_UNSAVED = new BattlefieldMap(MAP_NAME_UNKNOWN, 24, 16,
-			Arrays.asList(BattlefieldTileEnum.FLOOR, BattlefieldTileEnum.WALL, BattlefieldTileEnum.CONVEYOR));
+	private static final String MAP_ID_OTHER = "1111-1111-1111-1111";
 
-	@DataPoint
-	public static final BattlefieldMap BATTLEFIELD_MAP_SAVED = new BattlefieldMap(MAP_ID_SAVED, MAP_NAME_SAVED, 24, 16,
-			Arrays.asList(BattlefieldTileEnum.FLOOR, BattlefieldTileEnum.WALL, BattlefieldTileEnum.CONVEYOR));
+	private BattlefieldMap battlefieldMapUnsaved;
+
+	private BattlefieldMap battlefieldMapUnnamed;
+
+	private BattlefieldMap battlefieldMapSaved;
 
 	@Mock
 	private IThriftPool connectionPool;
@@ -86,54 +81,54 @@ public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
 
 	@Before
 	public void prepare() {
+
+		// reset class under test
 		repository = new CassandraBattlefieldMapRepository(connectionPool);
+
+		// reset test data
+		battlefieldMapUnsaved = new BattlefieldMap(MAP_NAME_UNKNOWN, 24, 16, Arrays.asList(BattlefieldTileEnum.FLOOR, BattlefieldTileEnum.WALL, BattlefieldTileEnum.CONVEYOR));
+		battlefieldMapUnnamed = new BattlefieldMap(null, 24, 16, Arrays.asList(BattlefieldTileEnum.FLOOR, BattlefieldTileEnum.WALL, BattlefieldTileEnum.CONVEYOR));
+		battlefieldMapSaved = new BattlefieldMap(MAP_ID_SAVED, MAP_NAME_SAVED, 24, 16, Arrays.asList(BattlefieldTileEnum.FLOOR, BattlefieldTileEnum.WALL, BattlefieldTileEnum.CONVEYOR));
+		
 	}
 
 
-	@Theory
-	public void shouldFindBattlefieldMapByName(final String name) {
+	@Test
+	public void shouldFindBattlefieldMapByName() {
 
 		// assume
-		assumeNotNull(name);
-		assumeThat(name, is(equalTo(MAP_NAME_SAVED)));
+		final String name = MAP_NAME_SAVED;
+		final List<Column> mapIndexColumnList = buildBattlefieldMapIndexColumns(battlefieldMapSaved.getId());
+		final List<Column> mapColumnList = buildBattlefieldMapColumns(battlefieldMapSaved.getName(), battlefieldMapSaved.getWidth(), battlefieldMapSaved.getHeight(), battlefieldMapSaved.getTiles());
 
 		// given
-		final List<Column> mapIndexColumnList = buildBattlefieldNameIndexMapColumns(BATTLEFIELD_MAP_SAVED.getId());
-		final List<Column> mapColumnList = buildBattlefieldMapColumns(BATTLEFIELD_MAP_SAVED.getName(),
-				BATTLEFIELD_MAP_SAVED.getWidth(), BATTLEFIELD_MAP_SAVED.getHeight(), BATTLEFIELD_MAP_SAVED.getTiles());
-
 		given(connectionPool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(),
-				isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(BATTLEFIELD_MAP_SAVED.getId()), anyBoolean(),
-				isA(ConsistencyLevel.class))).willReturn(mapColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(battlefieldMapSaved.getId()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapColumnList);
 
 		// when
 		final BattlefieldMap battlefieldMap = repository.findBattlefieldMapByName(name);
 
 		// then
 		assertNotNull("battlefield map", battlefieldMap);
-		assertThat("map id", battlefieldMap.getId(), is(equalTo(BATTLEFIELD_MAP_SAVED.getId())));
-		assertThat("map name", battlefieldMap.getName(), is(equalTo(BATTLEFIELD_MAP_SAVED.getName())));
-		assertThat("map width", battlefieldMap.getWidth(), is(equalTo(BATTLEFIELD_MAP_SAVED.getWidth())));
-		assertThat("map height", battlefieldMap.getHeight(), is(equalTo(BATTLEFIELD_MAP_SAVED.getHeight())));
-		assertThat("map tiles", battlefieldMap.getTiles(), is(equalTo(BATTLEFIELD_MAP_SAVED.getTiles())));
+		assertThat("map id", battlefieldMap.getId(), is(equalTo(battlefieldMapSaved.getId())));
+		assertThat("map name", battlefieldMap.getName(), is(equalTo(battlefieldMapSaved.getName())));
+		assertThat("map width", battlefieldMap.getWidth(), is(equalTo(battlefieldMapSaved.getWidth())));
+		assertThat("map height", battlefieldMap.getHeight(), is(equalTo(battlefieldMapSaved.getHeight())));
+		assertThat("map tiles", battlefieldMap.getTiles(), is(equalTo(battlefieldMapSaved.getTiles())));
 
 	}
 
-	@Theory
-	public void shouldNotFindBattlefieldMapByName(final String name) {
+	@Test
+	public void shouldNotFindBattlefieldMapByName() {
 
 		// assume
-		assumeNotNull(name);
-		assumeThat(name, is(equalTo(MAP_NAME_UNKNOWN)));
-
-		// given
+		final String name = MAP_NAME_UNKNOWN;
 		final List<Column> mapIndexColumnList = Collections.emptyList();
 
+		// given
 		given(connectionPool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(),
-				isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
 
 		// when
 		final BattlefieldMap battlefieldMap = repository.findBattlefieldMapByName(name);
@@ -158,47 +153,40 @@ public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
 
 	}
 
-	@Theory
-	public void shouldFindBattlefieldMapById(final String uuid) {
+	@Test
+	public void shouldFindBattlefieldMapById() {
 
 		// assume
-		assumeNotNull(uuid);
-		assumeThat(uuid, is(equalTo(MAP_ID_SAVED)));
+		final String uuid = MAP_ID_SAVED;
+		final List<Column> mapColumnList = buildBattlefieldMapColumns(battlefieldMapSaved.getName(), battlefieldMapSaved.getWidth(), battlefieldMapSaved.getHeight(), battlefieldMapSaved.getTiles());
 
 		// given
-		final List<Column> mapColumnList = buildBattlefieldMapColumns(BATTLEFIELD_MAP_SAVED.getName(),
-				BATTLEFIELD_MAP_SAVED.getWidth(), BATTLEFIELD_MAP_SAVED.getHeight(), BATTLEFIELD_MAP_SAVED.getTiles());
-
 		given(connectionPool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(uuid), anyBoolean(),
-				isA(ConsistencyLevel.class))).willReturn(mapColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(uuid), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapColumnList);
 
 		// when
 		final BattlefieldMap battlefieldMap = repository.findBattlefieldMapById(uuid);
 
 		// then
 		assertNotNull("battlefield map", battlefieldMap);
-		assertThat("map id", battlefieldMap.getId(), is(equalTo(BATTLEFIELD_MAP_SAVED.getId())));
-		assertThat("map name", battlefieldMap.getName(), is(equalTo(BATTLEFIELD_MAP_SAVED.getName())));
-		assertThat("map width", battlefieldMap.getWidth(), is(equalTo(BATTLEFIELD_MAP_SAVED.getWidth())));
-		assertThat("map height", battlefieldMap.getHeight(), is(equalTo(BATTLEFIELD_MAP_SAVED.getHeight())));
-		assertThat("map tiles", battlefieldMap.getTiles(), is(equalTo(BATTLEFIELD_MAP_SAVED.getTiles())));
+		assertThat("map id", battlefieldMap.getId(), is(equalTo(battlefieldMapSaved.getId())));
+		assertThat("map name", battlefieldMap.getName(), is(equalTo(battlefieldMapSaved.getName())));
+		assertThat("map width", battlefieldMap.getWidth(), is(equalTo(battlefieldMapSaved.getWidth())));
+		assertThat("map height", battlefieldMap.getHeight(), is(equalTo(battlefieldMapSaved.getHeight())));
+		assertThat("map tiles", battlefieldMap.getTiles(), is(equalTo(battlefieldMapSaved.getTiles())));
 
 	}
 
-	@Theory
-	public void shouldNotFindBattlefieldMapById(final String uuid) {
+	@Test
+	public void shouldNotFindBattlefieldMapById() {
 
 		// assume
-		assumeNotNull(uuid);
-		assumeThat(uuid, is(equalTo(MAP_ID_UNKNOWN)));
-
-		// given
+		final String uuid = MAP_ID_OTHER;
 		final List<Column> mapColumnList = Collections.emptyList();
 
+		// given
 		given(connectionPool.createSelector()).willReturn(selector);
-		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(uuid), anyBoolean(),
-				isA(ConsistencyLevel.class))).willReturn(mapColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(uuid), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapColumnList);
 
 		// when
 		final BattlefieldMap battlefieldMap = repository.findBattlefieldMapById(uuid);
@@ -224,44 +212,208 @@ public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
 	}
 
 	@Test
-	public void shouldCreateBattlefieldMap() throws Exception {
+	public void shouldCreateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapUnsaved; // map has no id yet
+		final List<Column> mapIndexColumnList = Collections.emptyList(); // index has no entry for that name
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+		given(connectionPool.createMutator()).willReturn(mutator);
+
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+
+		// when
+		repository.createBattlefieldMap(battlefieldMap);
+
+		// then
+		assertNotNull("map id", battlefieldMap.getId());
+		verify(mutator).writeColumns(eq(COLUMN_FAMILY_MAP), eq(battlefieldMap.getId()), anyListOf(Column.class));
+		verify(mutator).writeColumns(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyListOf(Column.class));
+		verify(mutator).execute(isA(ConsistencyLevel.class));
+
+	}
+
+	@Test(expected = DuplicateKeyException.class)
+	public void shouldThrowDuplicateKeyExceptionOnCreateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapUnsaved; // map has no id yet
+		final List<Column> mapIndexColumnList = buildBattlefieldMapIndexColumns("42"); // index has already an entry for
+		// that name
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+
+		// when
+		repository.createBattlefieldMap(battlefieldMap);
+
+		// then should throw exception
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExceptionOnCreateBattlefieldMapWithNoName() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapUnnamed; // map has no name
 
 		// given
 
 		// when
+		repository.createBattlefieldMap(battlefieldMap);
 
+		// then should throw exception
 
-		// then
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExceptionOnCreateBattlefieldMapWithNoMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = null;
+
+		// given
+
+		// when
+		repository.createBattlefieldMap(battlefieldMap);
+
+		// then should throw exception
 
 	}
 
 	@Test
-	public void shouldUpdateBattlefieldMap() throws Exception {
+	public void shouldUpdateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapSaved; // map has id
+		final List<Column> mapIndexColumnList = buildBattlefieldMapIndexColumns(MAP_ID_SAVED); // index has entry for saved
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+		given(connectionPool.createMutator()).willReturn(mutator);
+
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+
+		// when
+		repository.updateBattlefieldMap(battlefieldMap);
+
+		// then
+		verify(mutator).writeColumns(eq(COLUMN_FAMILY_MAP), eq(battlefieldMap.getId()), anyListOf(Column.class));
+		verify(mutator).writeColumns(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyListOf(Column.class));
+		verify(mutator).execute(isA(ConsistencyLevel.class));
+
+	}
+
+	@Test(expected = DuplicateKeyException.class)
+	public void shouldThrowDuplicateKeyExceptionOnUpdateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapSaved;
+		final List<Column> mapIndexColumnList = buildBattlefieldMapIndexColumns(MAP_ID_OTHER);
+		final List<Column> mapColumnList = buildBattlefieldMapColumns(MAP_NAME_OTHER, battlefieldMapSaved.getWidth(), battlefieldMapSaved.getHeight(), battlefieldMapSaved.getTiles());
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(battlefieldMap.getName()), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAP), eq(MAP_ID_OTHER), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapColumnList);
+
+		// when
+		repository.updateBattlefieldMap(battlefieldMap);
+
+		// then should throw exception
+
+	}
+
+	@Test(expected = InvalidDataAccessApiUsageException.class)
+	public void shouldThrowInvalidDataAccessApiUsageExceptionOnUpdateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = battlefieldMapUnsaved;
 
 		// given
 
 		// when
+		repository.updateBattlefieldMap(battlefieldMap);
 
+		// then should throw exception
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldIllegalArgumentExceptionOnUpdateBattlefieldMap() {
+
+		// assume
+		final BattlefieldMap battlefieldMap = null;
+
+		// given
+
+		// when
+		repository.updateBattlefieldMap(battlefieldMap);
+
+		// then should throw exception
+
+	}
+
+
+	@Test
+	public void shouldReturnTrueOnIsNameAvailable() {
+
+		// assume
+		final String name = MAP_NAME_UNKNOWN;
+		final List<Column> mapIndexColumnList = Collections.emptyList();
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+
+		// when
+		final boolean available = repository.isNameAvailable(name);
 
 		// then
+		assertTrue("available", available);
 
 	}
 
 	@Test
-	public void shouldIsNameAvailable() throws Exception {
+	public void shouldReturnFalseOnIsNameAvailable() {
+
+		// assume
+		final String name = MAP_NAME_SAVED;
+		final List<Column> mapIndexColumnList = buildBattlefieldMapIndexColumns(MAP_ID_SAVED);
+
+		// given
+		given(connectionPool.createSelector()).willReturn(selector);
+		given(selector.getColumnsFromRow(eq(COLUMN_FAMILY_MAPNAME_INDEX), eq(name), anyBoolean(), isA(ConsistencyLevel.class))).willReturn(mapIndexColumnList);
+
+		// when
+		final boolean available = repository.isNameAvailable(name);
+
+		// then
+		assertFalse("available", available);
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldThrowIllegalArgumentExceptionOnIsNameAvailableWithNull() {
+
+		// assume
+		final String name = null;
 
 		// given
 
 		// when
+		repository.isNameAvailable(name);
 
-
-		// then
+		// then should throw exception
 
 	}
 
-
-	private static List<Column> buildBattlefieldMapColumns(final String name, final int width, final int height,
-	                                                       final List<? extends BattlefieldTile> tiles) {
+	private static List<Column> buildBattlefieldMapColumns(final String name, final int width, final int height, final List<? extends BattlefieldTile> tiles) {
 		final List<Column> columns = new ArrayList<Column>();
 		columns.add(buildNameColumn(name));
 		columns.add(buildWidthColumn(width));
@@ -270,7 +422,7 @@ public class CassandraBattlefieldMapRepositoryUnitTest extends MockitoTestCase {
 		return columns;
 	}
 
-	private static List<Column> buildBattlefieldNameIndexMapColumns(final String uuid) {
+	private static List<Column> buildBattlefieldMapIndexColumns(final String uuid) {
 		final List<Column> columns = new ArrayList<Column>();
 		columns.add(buildIdColumn(uuid));
 		return columns;

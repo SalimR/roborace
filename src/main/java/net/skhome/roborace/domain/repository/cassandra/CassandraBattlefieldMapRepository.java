@@ -176,7 +176,7 @@ public class CassandraBattlefieldMapRepository implements BattlefieldMapReposito
 	public boolean isNameAvailable(final String name) {
 
 		if (name == null) {
-			return false;
+			throw new IllegalArgumentException("The passed map name was null.");
 		}
 
 		final Selector selector = connectionPool.createSelector();
